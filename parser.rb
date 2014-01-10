@@ -29,6 +29,6 @@ class Parser
     # Remove any boxes or figures (for now)
     @doc.css('div .figure, .box-element').unlink
 
-    content
+    content.to_html
   end
 end

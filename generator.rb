@@ -22,6 +22,8 @@ module Generator
     create_table_of_contents
     p 'Creating title page...'
     create_title_page
+    p 'Creating main body content...'
+    create_main_body
 
     p 'Saving as ePub to ' + output_path
     save_as_epub(output_path)
@@ -67,6 +69,17 @@ module Generator
         title:    @document.title,
         authors:  @document.authors.join(', '),
         abstract:  @document.abstract,
+      })
+  end
+
+  # Generates the main body
+  def self.create_main_body
+    create_file_from_template(
+    'main_body.xhtml.erb',
+    'OEBPS/Text/main_body.xhtml',
+      {
+        title:    @document.title,
+        content:  @document.content,
       })
   end
 
