@@ -8,6 +8,7 @@ class Document
 
   def initialize(path_to_file)
     parse(path_to_file)
+    to_epub
   end
 
   private
@@ -29,6 +30,11 @@ class Document
 
     # TODO remove after we've switched to online
     file.close
+  end
+
+  # Build the file!
+  def to_epub
+    Generator.build_book(self)
   end
 
   puts self.new('./sample.html')
