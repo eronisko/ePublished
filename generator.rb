@@ -1,6 +1,7 @@
 require 'tmpdir'
 require 'nokogiri'
 require 'fileutils'
+require 'ostruct'
 require 'erb'
 
 # Generates the ePub file
@@ -9,9 +10,7 @@ module Generator
   TEMPLATES_DIR = './templates'
 
   def self.build_book(document, output_path)
-    @title = document.title
-    @authors = document.authors.join(', ')
-    @images = [] # TODO
+    @document = document
 
     @working_directory = create_working_directory
 
@@ -20,8 +19,10 @@ module Generator
     create_manifest
     p 'Creating table of contents...'
     create_table_of_contents
+
     p 'Saving as ePub to ' + output_path
     save_as_epub(output_path)
+
     perform_cleanup
   end
 
@@ -38,12 +39,20 @@ module Generator
 
   # Generates the ePub manifest XML file
   def self.create_manifest
-    create_file_from_template('content.opf.erb', 'OEBPS/content.opf')
+    create_file_from_template('content.opf.erb', 'OEBPS/content.opf',
+      {
+        title:    @document.title,
+        authors:  @document.authors.join(', '),
+        images:   [],
+      })
   end
 
   # Generates table of contents
   def self.create_table_of_contents
-    create_file_from_template('toc.ncx.erb', 'OEBPS/toc.ncx')
+    create_file_from_template('toc.ncx.erb', 'OEBPS/toc.ncx',
+      {
+        title:    @document.title,
+      })
   end
 
   # Saves the directory structure as an epub file
@@ -61,10 +70,13 @@ module Generator
   end
 
   # Generates a file from an (ERB) template
-  def self.create_file_from_template(template_name, target_path)
-    output = File.open(File.join(@working_directory, target_path), 'w')
-    template_path = File.join(TEMPLATES_DIR, template_name)
-    output << ERB.new(File.open(template_path).read).result(binding)
-    output.close
+  def self.create_file_from_template(template_name, target_path, variables)
+    assignments = OpenStruct.new(variables)
+    template_file = File.open(File.join(TEMPLATES_DIR, template_name)).read
+
+    File.open(File.join(@working_directory, target_path), 'w') do |output|
+      output << ERB.new(template_file)
+                  .result(assignments.instance_eval{ binding })
+    end
   end
 end
