@@ -14,11 +14,14 @@ module Generator
 
     @working_directory = create_working_directory
 
+    # Generating files!
     create_directory_skeleton
     p 'Creating manifest...'
     create_manifest
     p 'Creating table of contents...'
     create_table_of_contents
+    p 'Creating title page...'
+    create_title_page
 
     p 'Saving as ePub to ' + output_path
     save_as_epub(output_path)
@@ -52,6 +55,18 @@ module Generator
     create_file_from_template('toc.ncx.erb', 'OEBPS/toc.ncx',
       {
         title:    @document.title,
+      })
+  end
+
+  # Generates table of contents
+  def self.create_title_page
+    create_file_from_template(
+    'title_page.xhtml.erb',
+    'OEBPS/Text/title_page.xhtml',
+      {
+        title:    @document.title,
+        authors:  @document.authors.join(', '),
+        abstract:  @document.abstract,
       })
   end
 

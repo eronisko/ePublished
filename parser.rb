@@ -10,9 +10,9 @@ class Parser
     @doc.xpath('//article[1]/header/h1').text
   end
 
-  # Extract abstract (array of paragraphs)
+  # Extract abstract (HTML)
   def get_abstract
-    @doc.xpath('//*[@id="abstract"]/div/p').map{ |p| p.text}
+    @doc.xpath('//*[@id="abstract"]/div/p').to_html
   end
 
   # Array of author names
@@ -21,7 +21,7 @@ class Parser
       .map {|p| p.text}
   end
 
-  # Array of nodes... of some kind TODO for now headings and paragraphs :)
+  # Main body of the article (in HTML)
   def get_content
     # Main content nodeset
     content = @doc.at_xpath('//article[1]/section[2]').children
