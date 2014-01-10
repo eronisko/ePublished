@@ -23,8 +23,12 @@ class Parser
 
   # Array of nodes... of some kind TODO for now headings and paragraphs :)
   def get_content
-    # Main content node
-    content = 
+    # Main content nodeset
+    content = @doc.at_xpath('//article[1]/section[2]').children
+
+    # Remove any boxes or figures (for now)
+    @doc.css('div .figure, .box-element').unlink
+
+    content
   end
 end
-
