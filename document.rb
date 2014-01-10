@@ -6,9 +6,9 @@ require './generator.rb'
 class Document
   attr_reader :title, :authors, :abstract, :content
 
-  def initialize(path_to_file)
-    parse(path_to_file)
-    to_epub
+  def initialize(source_path, output_path)
+    parse(source_path)
+    to_epub(output_path)
   end
 
   private
@@ -33,9 +33,9 @@ class Document
   end
 
   # Build the file!
-  def to_epub
-    Generator.build_book(self)
+  def to_epub(path)
+    Generator.build_book(self, path)
   end
 
-  self.new('./sample.html')
+  self.new('./sample.html', './output/test.epub')
 end
