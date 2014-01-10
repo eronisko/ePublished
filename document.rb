@@ -37,5 +37,5 @@ class Document
     Generator.build_book(self)
   end
 
-  puts self.new('./sample.html')
+  self.new('./sample.html')
 end
