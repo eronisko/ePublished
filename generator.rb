@@ -21,7 +21,7 @@ module Generator
   def self.create_directory_skeleton
     target = OUTPUT_DIR + @book_directory
     FileUtils.mkdir_p target
-    FileUtils.cp_r SKELETON_DIR + '/', target, verbose: true
+    FileUtils.cp_r SKELETON_DIR + '/.', target, verbose: true
   end
 
   # Generates the ePub manifest XML file
