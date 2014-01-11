@@ -3,8 +3,15 @@ require 'rubygems'
 require './parser.rb'
 require './generator.rb'
 
+class Reference
+  attr_reader :html_id, :entry
+  def initialize(html_id, entry)
+    @html_id, @entry = html_id, entry
+  end
+end
+
 class Document
-  attr_reader :title, :authors, :abstract, :content
+  attr_reader :title, :authors, :abstract, :content, :references
 
   def initialize(source_path, output_path)
     parse(source_path)
@@ -27,6 +34,9 @@ class Document
     @authors = parser.get_authors
     @abstract = parser.get_abstract
     @content = parser.get_content
+    @references = parser.get_references.map do |r|
+      Reference.new(r[:html_id], r[:entry])
+    end
 
     # TODO remove after we've switched to online
     file.close

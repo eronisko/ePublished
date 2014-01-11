@@ -24,6 +24,8 @@ module Generator
     create_title_page
     p 'Creating main body content...'
     create_main_body
+    p 'Creating references section...'
+    create_references
 
     p 'Saving as ePub to ' + output_path
     save_as_epub(output_path)
@@ -82,6 +84,17 @@ module Generator
         content:  @document.content,
       })
   end
+
+  # Generates the references section
+  def self.create_references
+    create_file_from_template(
+    'references.xhtml.erb',
+    'OEBPS/Text/references.xhtml',
+      {
+        references:  @document.references,
+      })
+  end
+
 
   # Saves the directory structure as an epub file
   def self.save_as_epub(output_path)
